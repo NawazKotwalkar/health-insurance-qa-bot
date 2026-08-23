@@ -55,21 +55,21 @@ st.markdown("""
         padding-top: 3rem !important;
     }
 
-    /* Heavy CSS: Tailwind-style Gradient Text for Title */
+    /* Heavy CSS: Tailwind-style Pink Gradient Text for Title */
     .outside-heading {
         font-size: 3rem;
         font-weight: 800;
         letter-spacing: -0.04em;
         margin-bottom: 0.5rem;
-        background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+        background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         text-align: center;
     }
     .outside-subtitle {
-        color: #64748b;
+        color: #9d174d !important; /* Dark Pink */
         font-size: 1.1rem;
-        font-weight: 500;
+        font-weight: 600;
         margin-bottom: 2.5rem;
         text-align: center;
         letter-spacing: -0.01em;
@@ -77,7 +77,7 @@ st.markdown("""
     
     /* Highlight word in subtitle */
     .highlight-badge {
-        background: linear-gradient(to right, #ec4899, #8b5cf6);
+        background: linear-gradient(to right, #be185d, #9d174d);
         color: white;
         padding: 0.2rem 0.6rem;
         border-radius: 9999px; /* tailwind rounded-full */
@@ -93,8 +93,8 @@ st.markdown("""
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
         border-radius: 24px;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05), inset 0 0 0 1px rgba(255,255,255,0.5) !important;
-        border: 1px solid rgba(226, 232, 240, 0.8) !important;
+        box-shadow: 0 10px 15px -3px rgba(236, 72, 153, 0.05), 0 4px 6px -4px rgba(236, 72, 153, 0.05), inset 0 0 0 1px rgba(255,255,255,0.5) !important;
+        border: 1px solid rgba(252, 231, 243, 0.8) !important;
         padding: 2rem !important;
     }
 
@@ -104,40 +104,33 @@ st.markdown("""
         to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Chat Messages Restyling */
+    /* Chat Messages Restyling (Light Pink Backgrounds) */
     .stChatMessage {
-        background: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
-        padding: 0.5rem !important;
+        background: #fdf2f8 !important; /* Light pink background */
+        border: 1px solid #fce7f3 !important;
+        border-radius: 16px !important;
+        box-shadow: 0 2px 5px rgba(236, 72, 153, 0.02) !important;
+        padding: 1rem 1.5rem !important;
         margin-bottom: 1.5rem !important;
         animation: slideUpFade 0.4s ease-out forwards;
     }
-    
-    /* User Message Bubble (Tailwind style) */
-    .stChatMessage:not(:has(.assistant-avatar)) {
-        background-color: #f8fafc !important;
-        border-radius: 16px;
-        border: 1px solid #f1f5f9 !important;
-        padding: 1rem 1.5rem !important;
-    }
 
     .stChatMessage .stMarkdown p {
-        color: #334155 !important; /* text-slate-700 */
+        color: #000000 !important; /* Black text */
         font-size: 16px;
         line-height: 1.7;
     }
     
     /* Premium Avatars */
     .stChatMessage:has(.assistant-avatar) [data-testid="stChatAvatar"] {
-        background: linear-gradient(135deg, #0f172a, #1e293b) !important;
+        background: linear-gradient(135deg, #ec4899, #be185d) !important;
         border-radius: 8px !important;
         border: none !important;
-        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 6px -1px rgba(236,72,153,0.2);
     }
     .stChatMessage:not(:has(.assistant-avatar)) [data-testid="stChatAvatar"] {
-        background: #e2e8f0 !important;
-        color: #475569 !important;
+        background: #fbcfe8 !important;
+        color: #831843 !important;
     }
 
     /* Heavy CSS: Floating Chat Input Box (Tailwind dark mode style) */
@@ -152,12 +145,12 @@ st.markdown("""
     
     /* Input hover/focus effects */
     .stChatInputContainer:hover {
-        box-shadow: 0 25px 30px -5px rgba(0, 0, 0, 0.15);
-        border-color: #334155 !important;
+        box-shadow: 0 25px 30px -5px rgba(236, 72, 153, 0.15);
+        border-color: #ec4899 !important;
     }
     .stChatInputContainer:focus-within {
-        border-color: #8b5cf6 !important; /* violet-500 ring */
-        box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2) !important;
+        border-color: #ec4899 !important; /* pink-500 ring */
+        box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.2) !important;
     }
 
     div[data-testid="stChatInput"] {
@@ -178,24 +171,24 @@ st.markdown("""
         transition: background-color 0.2s;
     }
     .stChatInputContainer button:hover {
-        background: #475569 !important;
+        background: #ec4899 !important;
     }
     
     /* Tailored Expander */
     .streamlit-expanderHeader p {
-        color: #64748b !important;
+        color: #be185d !important;
         font-weight: 600;
         font-size: 0.9rem;
     }
     [data-testid="stExpander"] {
-        background: #f8fafc;
-        border: 1px dashed #cbd5e1;
+        background: #fdf2f8;
+        border: 1px dashed #fbcfe8;
         border-radius: 12px;
         transition: all 0.2s ease;
     }
     [data-testid="stExpander"]:hover {
-        border-color: #94a3b8;
-        background: #f1f5f9;
+        border-color: #ec4899;
+        background: #fce7f3;
     }
 </style>
 """, unsafe_allow_html=True)
