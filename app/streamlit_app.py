@@ -57,7 +57,7 @@ st.markdown("""
         border-radius: 12px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.03);
         border: 1px solid #e2e2e2 !important;
-        padding: 1.5rem !important;
+        padding: 1.5rem 1.5rem 1rem 1.5rem !important; /* Less padding on the bottom */
     }
 
     /* Chat Messages - Plain text, no bubbles */
@@ -87,6 +87,13 @@ st.markdown("""
         border: none !important;
         border-radius: 8px !important;
         padding: 0.2rem 1rem !important;
+        margin-top: auto !important; /* Push to bottom of flex container */
+        margin-bottom: 0 !important;
+    }
+
+    div[data-testid="stChatInput"] {
+        padding-bottom: 0 !important;
+        margin-top: auto !important; /* Force to bottom of container */
     }
 
     .stChatInputContainer textarea {
