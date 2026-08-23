@@ -1,6 +1,6 @@
 """
 streamlit_app.py
-Precise match to the user's uploaded chatbox UI.
+Stable, responsive UI matching the user's design using native Streamlit layout features.
 """
 
 import sys
@@ -18,7 +18,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 2. Structural CSS Injection
+# 2. Stable CSS Injection
 st.markdown("""
 <style>
     /* Hide the default Streamlit sidebar toggle and top bar */
@@ -31,28 +31,33 @@ st.markdown("""
         background-color: #f4f5f7;
     }
     
+    /* Ensure the main column doesn't exceed a readable width */
+    .block-container {
+        max-width: 900px !important;
+        padding-top: 2rem !important;
+    }
+
     /* Heading Outside the Box */
     .outside-heading {
         color: #8a1936;
-        font-size: 1.5rem;
-        font-weight: 700;
+        font-size: 2rem;
+        font-weight: 800;
         font-family: 'Helvetica Neue', sans-serif;
-        margin-top: 1rem;
         margin-bottom: 0.2rem;
     }
     .outside-subtitle {
-        color: #a0a0a0;
-        font-size: 0.9rem;
+        color: #71717a;
+        font-size: 1rem;
         margin-bottom: 1.5rem;
     }
 
-    /* Target the specific container using the marker class */
-    div[data-testid="stVerticalBlock"]:has(.main-card-marker) {
+    /* Target Native Streamlit Container (border=True) to make it the White Card */
+    div[data-testid="stVerticalBlockBorderWrapper"] {
         background-color: #ffffff;
         border-radius: 12px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.03);
         border: 1px solid #e2e2e2;
-        padding: 2rem 2rem 2.5rem 2rem !important;
+        padding: 1rem !important;
     }
 
     /* Chat Messages - Plain text, no bubbles */
@@ -61,12 +66,12 @@ st.markdown("""
         border: none !important;
         box-shadow: none !important;
         padding: 0 !important;
-        margin-bottom: 1.2rem !important;
+        margin-bottom: 1rem !important;
     }
     .stChatMessage .stMarkdown p {
         color: #111111 !important;
         font-size: 15px;
-        line-height: 1.5;
+        line-height: 1.6;
     }
     
     /* Custom Avatar Styling to match the dark square in the image */
@@ -77,31 +82,20 @@ st.markdown("""
     }
 
     /* The Dark Charcoal Chat Input Box */
-    /* Force it to stay INSIDE the white card */
     .stChatInputContainer {
-        position: relative !important;
-        bottom: 0 !important;
         background-color: #2b2c36 !important;
         border: none !important;
         border-radius: 8px !important;
         padding: 0.2rem 1rem !important;
-        margin-top: 1.5rem !important;
-        box-shadow: none !important;
-    }
-    
-    /* Extra wrapper reset to ensure position relative works */
-    div[data-testid="stChatInput"] {
-        position: static !important;
-        padding-bottom: 0 !important;
     }
 
     .stChatInputContainer textarea {
-        color: #8b8d96 !important;
+        color: #e4e4e7 !important;
         background: transparent !important;
     }
     .stChatInputContainer button {
         background-color: transparent !important;
-        color: #8b8d96 !important;
+        color: #e4e4e7 !important;
     }
     
     /* Expander styling */
@@ -117,18 +111,17 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# 3. Header OUTSIDE the box (partially visible in the screenshot)
+# 3. Header OUTSIDE the box
 st.markdown("""
 <div class="outside-heading">Insurance Policy RAG</div>
 <div class="outside-subtitle">Retrieval-Augmented Generation pipeline using Gemini & ChromaDB.</div>
 """, unsafe_allow_html=True)
 
-# 4. The White Box Container
-with st.container():
-    # Invisible marker to allow CSS targeting of this exact container
-    st.markdown("<div class='main-card-marker'></div>", unsafe_allow_html=True)
-    
-    # Scrollable Chat History
+# 4. The White Box Container (using native border wrapper for absolute stability)
+main_card = st.container(border=True)
+
+with main_card:
+    # Use a fixed-height container inside the card for the scrollable chat history
     chat_container = st.container(height=450, border=False)
 
     with chat_container:
@@ -154,7 +147,7 @@ with st.container():
                         for s in msg["sources"]:
                             st.markdown(f"**{s['source']}** — Page {s['page']}")
 
-    # Chat Input exactly below the chat container inside the white box
+    # Chat Input natively sits at the bottom of the main_card container!
     question = st.chat_input("Ask about your coverage, limits, or claims...")
 
     if question:
