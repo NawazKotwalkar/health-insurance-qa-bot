@@ -1,6 +1,6 @@
 """
 streamlit_app.py
-Highly Aesthetic, Stable Chat UI with White & Pink Glassmorphism theme.
+Custom UI matching the provided design mockup.
 """
 
 import sys
@@ -12,156 +12,164 @@ from rag.query import answer_question
 
 # 1. Page Configuration
 st.set_page_config(
-    page_title="Health Policy AI",
-    page_icon="✨",
-    layout="centered",
+    page_title="Health Insurance AI",
+    page_icon="🧬",
+    layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# 2. Custom CSS for Stable & Aesthetic White/Pink Glassmorphism
+# 2. Custom CSS to match the design precisely
 st.markdown("""
 <style>
-    /* Global App Background - Smooth White to Soft Blush Pink */
+    /* Global App Background (Light Gray with subtle pattern feel) */
     .stApp {
-        background: linear-gradient(135deg, #ffffff 0%, #fff0f5 100%);
-        background-attachment: fixed;
+        background-color: #f7f9fc;
     }
     
-    /* Base text colors - Dark Black for high contrast readability */
-    .stMarkdown p, .stMarkdown li, .stMarkdown span {
-        color: #111111 !important;
-        font-size: 16px;
-        line-height: 1.7;
+    /* Center the main headers to match the mockup */
+    .top-header {
+        text-align: center;
+        font-family: 'Helvetica Neue', sans-serif;
+        margin-top: 1rem;
     }
-    
-    /* Main Headers - Aesthetic Pink Accent */
-    h1, h2, h3, h4 {
-        color: #e91e63 !important; 
-        font-family: 'Helvetica Neue', sans-serif !important;
-        font-weight: 800 !important;
-        letter-spacing: -0.5px;
+    .top-title {
+        color: #0b1120;
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
     }
-
-    /* Sidebar styling with stable Glassmorphism */
-    [data-testid="stSidebar"] {
-        background: rgba(255, 255, 255, 0.4) !important;
-        backdrop-filter: blur(20px) !important;
-        -webkit-backdrop-filter: blur(20px) !important;
-        border-right: 1px solid rgba(233, 30, 99, 0.15);
-    }
-    
-    /* Sidebar text */
-    [data-testid="stSidebar"] p {
-        color: #222222 !important;
+    .top-subtitle {
+        color: #be2959;
+        font-size: 1.4rem;
         font-weight: 500;
+        margin-bottom: 3rem;
     }
 
-    /* Chat Messages - Elevated Glass Bubbles */
+    /* Target the main block container to act as the right-side of the white card */
+    .block-container {
+        background-color: #ffffff;
+        border-radius: 0 20px 20px 0;
+        box-shadow: 10px 10px 30px rgba(0,0,0,0.05);
+        padding: 3rem !important;
+        max-width: 1000px !important;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+        border-top: 1px solid #eaeaea;
+        border-right: 1px solid #eaeaea;
+        border-bottom: 1px solid #eaeaea;
+    }
+
+    /* Sidebar to act as the left pink panel of the card */
+    [data-testid="stSidebar"] {
+        background-color: #fdeef3 !important; /* Soft pink */
+        border-right: 1px solid #f6dce5 !important;
+        box-shadow: -5px 10px 30px rgba(0,0,0,0.02);
+    }
+    
+    /* Sidebar content typography */
+    [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 {
+        color: #0b1120 !important;
+        font-weight: 700 !important;
+    }
+    [data-testid="stSidebar"] p {
+        color: #0b1120 !important;
+    }
+
+    /* Chat Messages - NO bubbles, just plain text matching the mockup */
     .stChatMessage {
-        background: rgba(255, 255, 255, 0.65) !important;
-        backdrop-filter: blur(12px) !important;
-        -webkit-backdrop-filter: blur(12px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.8) !important;
-        border-radius: 20px !important;
-        box-shadow: 0 8px 32px 0 rgba(233, 30, 99, 0.08) !important;
-        padding: 1.5rem !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
         margin-bottom: 1.5rem !important;
     }
+    
+    /* Make chat text dark black */
+    .stChatMessage .stMarkdown p {
+        color: #0b1120 !important;
+        font-size: 16px;
+        line-height: 1.6;
+    }
 
-    /* Chat Input Box - Floating Glass Pill */
+    /* Chat Input Container - Pink Box like the mockup */
     .stChatInputContainer {
-        background: rgba(255, 255, 255, 0.85) !important;
-        backdrop-filter: blur(15px) !important;
-        border-radius: 30px !important;
-        border: 1px solid rgba(233, 30, 99, 0.25) !important;
-        box-shadow: 0 10px 40px rgba(233, 30, 99, 0.12) !important;
-        padding: 0.2rem 1rem !important;
-        margin-bottom: 1rem !important;
-    }
-    
-    /* Chat Input Text */
-    .stChatInputContainer textarea {
-        color: #111111 !important;
-    }
-    
-    /* Buttons */
-    .stButton>button {
-        background: linear-gradient(90deg, #ff4081 0%, #e91e63 100%) !important;
-        color: #ffffff !important;
-        border: none !important;
+        background-color: #fcd5e3 !important;
+        border: 2px solid #ed9ebc !important;
         border-radius: 12px !important;
-        box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3) !important;
-        font-weight: 600 !important;
-        padding: 0.5rem 1rem !important;
-        transition: all 0.3s ease !important;
-    }
-    .stButton>button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(233, 30, 99, 0.4) !important;
-    }
-    .stButton>button p {
-        color: #ffffff !important; /* Keep button text white */
+        padding: 0.5rem !important;
+        box-shadow: 0 4px 15px rgba(237, 158, 188, 0.2) !important;
     }
     
-    /* Expander / Sources */
+    .stChatInputContainer textarea {
+        color: #0b1120 !important;
+        background: transparent !important;
+    }
+    
+    /* Style the send button inside the chat input */
+    .stChatInputContainer button {
+        background-color: #ef476f !important;
+        color: white !important;
+        border-radius: 8px !important;
+    }
+
+    /* Hide the default Streamlit top bar decorations */
+    header {visibility: hidden;}
+    
+    /* Expander / Sources styling to match the clean look */
     .streamlit-expanderHeader p {
-        color: #e91e63 !important;
-        font-weight: 700;
+        color: #be2959 !important;
+        font-weight: 600;
     }
     [data-testid="stExpander"] {
-        background: rgba(255, 255, 255, 0.7);
-        border: 1px solid rgba(233, 30, 99, 0.2);
-        border-radius: 12px;
-        margin-top: 0.5rem;
-    }
-    [data-testid="stExpanderDetails"] p {
-        color: #444444 !important; /* Slightly softer black for source text */
-        font-size: 0.9em;
+        background: transparent;
+        border: 1px solid #eaeaea;
+        border-radius: 8px;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# 3. Sidebar UI 
+# 3. Top Headers (Outside the main container logic if possible, 
+# but Streamlit forces it inside the block-container. We will just render them at the top)
+st.markdown("<div class='top-header'><div class='top-title'>Health Insurance AI</div><div class='top-subtitle'>Secure, grounded answers from your policy documents.</div></div>", unsafe_allow_html=True)
+
+# 4. Sidebar UI (The left pink panel)
 with st.sidebar:
-    st.markdown("<h2 style='text-align: center;'>✨ System Core</h2>", unsafe_allow_html=True)
+    st.markdown("<h2>System Settings</h2>", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
     
+    st.markdown("#### ✨ System Core")
     st.markdown("#### ⚙️ Architecture")
     st.markdown(
         """
-        - **LLM:** Gemini 3.5 Flash
-        - **Embed:** Gemini-Embedding-2
-        - **Vector:** ChromaDB
+        LLM: Gemini 3.5 Flash  
+        Embed: Gemini-Embedding-2  
+        Vector: ChromaDB  
         """
     )
     
-    st.divider()
+    st.markdown("<br><hr style='background-color: #f6dce5; height: 1px; border: none;'><br>", unsafe_allow_html=True)
     
     st.markdown("#### 📄 Knowledge Base")
     st.markdown("✅ CMS Summary of Benefits")
     st.markdown("✅ Niva Bupa Policy Wording")
-    
-    st.divider()
-    
-    if st.button("✨ Clear Chat", use_container_width=True):
-        st.session_state.messages = []
-        st.rerun()
 
-# 4. Main Chat Interface
-st.markdown("<h1 style='text-align: center; margin-bottom: 0;'>Health Insurance AI</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; color: #e91e63 !important; font-weight: 600; font-size: 1.1em; margin-bottom: 3rem;'>Secure, grounded answers from your policy documents.</p>", unsafe_allow_html=True)
-
-# Initialize chat history
+# 5. Main Chat Interface
 if "messages" not in st.session_state:
     st.session_state.messages = []
+    # Add the default greeting from the mockup
+    st.session_state.messages.append({
+        "role": "assistant", 
+        "content": "👋 Hello! I am your Health Insurance AI Assistant. Ask me anything about your coverage, limits, or claims from your Niva Bupa and CMS policy documents."
+    })
 
 # Display chat messages from history
 for msg in st.session_state.messages:
-    avatar = "👤" if msg["role"] == "user" else "✨"
+    # Use specific emojis that look like the mockup's avatars
+    avatar = "👤" if msg["role"] == "user" else "🧬"
     with st.chat_message(msg["role"], avatar=avatar):
         st.markdown(msg["content"])
         if msg.get("sources"):
-            with st.expander("📄 View Sources"):
+            with st.expander("View Sources"):
                 for s in msg["sources"]:
                     st.markdown(f"**{s['source']}** — Page {s['page']}")
 
@@ -172,7 +180,7 @@ if question:
     with st.chat_message("user", avatar="👤"):
         st.markdown(question)
 
-    with st.chat_message("assistant", avatar="✨"):
+    with st.chat_message("assistant", avatar="🧬"):
         with st.spinner("Searching documents..."):
             try:
                 result = answer_question(question)
@@ -180,7 +188,7 @@ if question:
                 
                 # Format sources nicely
                 if result["sources"]:
-                    with st.expander("📄 View Sources"):
+                    with st.expander("View Sources"):
                         for s in result["sources"]:
                             st.markdown(f"**{s['source']}** — Page {s['page']}")
                 
