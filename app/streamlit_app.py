@@ -1,6 +1,6 @@
 """
 streamlit_app.py
-Unified chatbox UI with heading, chat, and clear button inside a single container.
+Unified single-box UI.
 """
 
 import sys
@@ -10,7 +10,6 @@ import streamlit as st
 sys.path.append(str(Path(__file__).parent.parent))
 from rag.query import answer_question
 
-# 1. Page Configuration
 st.set_page_config(
     page_title="Insurance Policy RAG",
     page_icon="🧬",
@@ -18,7 +17,6 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 2. Structural CSS Injection
 st.markdown("""
 <style>
     /* Hide the default Streamlit sidebar toggle and top bar */
@@ -31,26 +29,16 @@ st.markdown("""
         background-color: #f7f9fc;
     }
     
-    /* The Unified Main Card */
-    .main-card {
+    /* Make the entire Streamlit block container the White Card */
+    .block-container {
         background-color: #ffffff;
         border-radius: 20px;
         box-shadow: 0 10px 40px rgba(0,0,0,0.06);
         border: 1px solid #eaeaea;
-        padding: 2rem;
-        max-width: 900px;
-        margin: 2rem auto;
-    }
-
-    /* Target Streamlit's block container to act as the main card wrapper */
-    div[data-testid="stVerticalBlock"] > div:has(> div[data-testid="stVerticalBlock"]) {
-        background-color: #ffffff;
-        border-radius: 20px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.06);
-        border: 1px solid #eaeaea;
-        padding: 2.5rem !important;
-        max-width: 900px;
-        margin: 0 auto;
+        padding: 3rem !important;
+        max-width: 900px !important;
+        margin-top: 3rem !important;
+        margin-bottom: 3rem !important;
     }
 
     /* Heading inside the card */
@@ -65,7 +53,7 @@ st.markdown("""
         color: #be2959;
         font-size: 1.1rem;
         font-weight: 500;
-        margin-bottom: 2rem;
+        margin-bottom: 1rem;
     }
 
     /* Clear Button styling */
@@ -76,7 +64,6 @@ st.markdown("""
         border-radius: 8px !important;
         font-weight: 600 !important;
         float: right;
-        margin-top: 0.5rem;
     }
     .stButton>button:hover {
         background-color: #fcd5e3 !important;
@@ -87,7 +74,7 @@ st.markdown("""
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
-        padding: 0 1rem 0 0 !important;
+        padding: 0 !important;
         margin-bottom: 1.2rem !important;
     }
     .stChatMessage .stMarkdown p {
@@ -97,13 +84,24 @@ st.markdown("""
     }
 
     /* The Pink Chat Input Box */
+    /* Force it to stay INSIDE the card and not float at the bottom of the screen */
     .stChatInputContainer {
+        position: relative !important;
+        bottom: 0 !important;
         background-color: #fcd5e3 !important;
         border: 2px solid #ed9ebc !important;
         border-radius: 12px !important;
         padding: 0.2rem 1rem !important;
-        margin-top: 1.5rem !important;
+        margin-top: 2rem !important;
+        box-shadow: none !important;
     }
+    
+    /* Extra wrapper reset to ensure position relative works */
+    div[data-testid="stChatInput"] {
+        position: static !important;
+        padding-bottom: 0 !important;
+    }
+
     .stChatInputContainer textarea {
         color: #0b1120 !important;
         background: transparent !important;
@@ -127,8 +125,6 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# 3. Everything is now inside one unified block
-
 # Header row with title and clear button
 col1, col2 = st.columns([3, 1])
 with col1:
@@ -143,10 +139,10 @@ with col2:
         st.session_state.messages = []
         st.rerun()
 
-st.divider()
+st.markdown("<hr style='background-color: #eaeaea; height: 1px; border: none; margin-bottom: 2rem;'>", unsafe_allow_html=True)
 
-# 4. Chat Container
-chat_container = st.container(height=500, border=False)
+# Scrollable Chat Container
+chat_container = st.container(height=450, border=False)
 
 with chat_container:
     if "messages" not in st.session_state:
@@ -165,7 +161,7 @@ with chat_container:
                     for s in msg["sources"]:
                         st.markdown(f"**{s['source']}** — Page {s['page']}")
 
-# Chat Input at the bottom
+# Chat Input exactly below the chat container inside the same card
 question = st.chat_input("Query the vector database...")
 
 if question:
