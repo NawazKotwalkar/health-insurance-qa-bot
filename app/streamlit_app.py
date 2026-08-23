@@ -21,42 +21,67 @@ st.set_page_config(
 # 2. CSS Injection
 st.markdown("""
 <style>
+    /* Import Inter Font for a highly premium SaaS look */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    
+    * {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
     /* Hide the default Streamlit sidebar toggle and top bar */
     [data-testid="collapsedControl"] { display: none !important; }
     header { visibility: hidden !important; }
     footer { visibility: hidden !important; }
     
+    /* Elegant Custom Scrollbar */
+    ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+        background: transparent; 
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #e4e4e7; 
+        border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: #d4d4d8; 
+    }
+    
     /* Global App Background */
     .stApp {
-        background-color: #f4f5f7;
+        background-color: #f4f5f8;
     }
     
     /* Ensure the main column doesn't exceed a readable width */
     .block-container {
         max-width: 900px !important;
-        padding-top: 2rem !important;
+        padding-top: 2.5rem !important;
     }
 
     /* Heading Outside the Box */
     .outside-heading {
-        color: #8a1936;
-        font-size: 2rem;
+        color: #18181b;
+        font-size: 2.2rem;
         font-weight: 800;
-        font-family: 'Helvetica Neue', sans-serif;
+        letter-spacing: -0.02em;
         margin-bottom: 0.2rem;
     }
     .outside-subtitle {
         color: #71717a;
-        font-size: 1rem;
-        margin-bottom: 1.5rem;
+        font-size: 1.05rem;
+        font-weight: 400;
+        margin-bottom: 2rem;
     }
 
     /* Target the single Native Streamlit Container */
     div[data-testid="stVerticalBlockBorderWrapper"] {
         background-color: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-        border: 1px solid #e2e2e2 !important;
+        border-radius: 16px;
+        /* Layered premium shadow */
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 24px 48px -12px rgba(0, 0, 0, 0.08) !important;
+        border: 1px solid #e5e7eb !important;
         padding: 1.5rem 1.5rem 1rem 1.5rem !important; /* Less padding on the bottom */
     }
 
@@ -94,6 +119,12 @@ st.markdown("""
     div[data-testid="stChatInput"] {
         padding-bottom: 0 !important;
         margin-top: auto !important; /* Force to bottom of container */
+    }
+    
+    /* Remove the default ugly focus ring from Streamlit */
+    .stChatInputContainer:focus-within {
+        border: none !important;
+        box-shadow: 0 0 0 1px #3f3f46 !important; /* Subtle dark grey ring instead */
     }
 
     .stChatInputContainer textarea {
