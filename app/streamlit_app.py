@@ -1,6 +1,6 @@
 """
 streamlit_app.py
-Premium chat UI with White & Pink Glassmorphism theme.
+Highly Aesthetic, Stable Chat UI with White & Pink Glassmorphism theme.
 """
 
 import sys
@@ -13,108 +13,117 @@ from rag.query import answer_question
 # 1. Page Configuration
 st.set_page_config(
     page_title="Health Policy AI",
-    page_icon="🌸",
+    page_icon="✨",
     layout="centered",
     initial_sidebar_state="expanded"
 )
 
-# 2. Custom CSS for White & Pink Glassmorphism
+# 2. Custom CSS for Stable & Aesthetic White/Pink Glassmorphism
 st.markdown("""
 <style>
-    /* Global App Background - Soft White to Pink Gradient */
+    /* Global App Background - Smooth White to Soft Blush Pink */
     .stApp {
-        background: linear-gradient(135deg, #ffffff 0%, #ffe4e1 100%);
+        background: linear-gradient(135deg, #ffffff 0%, #fff0f5 100%);
         background-attachment: fixed;
     }
     
-    /* Sidebar styling with Glassmorphism */
-    [data-testid="stSidebar"] {
-        background: rgba(255, 255, 255, 0.5) !important;
-        backdrop-filter: blur(12px) !important;
-        -webkit-backdrop-filter: blur(12px) !important;
-        border-right: 1px solid rgba(255, 255, 255, 0.6);
-    }
-
-    /* Main Chat Container wrapping */
-    .block-container {
-        background: rgba(255, 255, 255, 0.4);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 255, 255, 0.6);
-        border-radius: 20px;
-        box-shadow: 0 8px 32px 0 rgba(255, 182, 193, 0.3);
-        padding: 3rem !important;
-        margin-top: 3rem;
-        margin-bottom: 3rem;
-    }
-
-    /* Header styling */
-    h1 {
-        color: #d1477a !important;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        text-align: center;
-        margin-bottom: 0.2rem;
+    /* Base text colors - Dark Black for high contrast readability */
+    .stMarkdown p, .stMarkdown li, .stMarkdown span {
+        color: #111111 !important;
+        font-size: 16px;
+        line-height: 1.7;
     }
     
-    .subtitle {
-        text-align: center;
-        color: #e884a1;
-        font-size: 1.1em;
-        margin-bottom: 2rem;
+    /* Main Headers - Aesthetic Pink Accent */
+    h1, h2, h3, h4 {
+        color: #e91e63 !important; 
+        font-family: 'Helvetica Neue', sans-serif !important;
+        font-weight: 800 !important;
+        letter-spacing: -0.5px;
+    }
+
+    /* Sidebar styling with stable Glassmorphism */
+    [data-testid="stSidebar"] {
+        background: rgba(255, 255, 255, 0.4) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        border-right: 1px solid rgba(233, 30, 99, 0.15);
+    }
+    
+    /* Sidebar text */
+    [data-testid="stSidebar"] p {
+        color: #222222 !important;
         font-weight: 500;
     }
 
-    /* Chat Messages - Individual Bubbles */
+    /* Chat Messages - Elevated Glass Bubbles */
     .stChatMessage {
-        background: rgba(255, 255, 255, 0.7) !important;
-        border-radius: 15px !important;
+        background: rgba(255, 255, 255, 0.65) !important;
+        backdrop-filter: blur(12px) !important;
+        -webkit-backdrop-filter: blur(12px) !important;
         border: 1px solid rgba(255, 255, 255, 0.8) !important;
-        box-shadow: 0 4px 15px rgba(255, 182, 193, 0.15) !important;
-        padding: 1.2rem !important;
-        margin-bottom: 1rem !important;
+        border-radius: 20px !important;
+        box-shadow: 0 8px 32px 0 rgba(233, 30, 99, 0.08) !important;
+        padding: 1.5rem !important;
+        margin-bottom: 1.5rem !important;
     }
 
-    /* Chat Input Box */
+    /* Chat Input Box - Floating Glass Pill */
     .stChatInputContainer {
-        background: rgba(255, 255, 255, 0.6) !important;
-        backdrop-filter: blur(10px) !important;
-        border-radius: 20px !important;
-        border: 1px solid rgba(255, 255, 255, 0.8) !important;
-        box-shadow: 0 4px 20px rgba(255, 182, 193, 0.2) !important;
-        padding-bottom: 1rem;
+        background: rgba(255, 255, 255, 0.85) !important;
+        backdrop-filter: blur(15px) !important;
+        border-radius: 30px !important;
+        border: 1px solid rgba(233, 30, 99, 0.25) !important;
+        box-shadow: 0 10px 40px rgba(233, 30, 99, 0.12) !important;
+        padding: 0.2rem 1rem !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    /* Chat Input Text */
+    .stChatInputContainer textarea {
+        color: #111111 !important;
     }
     
     /* Buttons */
     .stButton>button {
-        background: linear-gradient(90deg, #ffb6c1 0%, #ffc0cb 100%) !important;
+        background: linear-gradient(90deg, #ff4081 0%, #e91e63 100%) !important;
         color: #ffffff !important;
         border: none !important;
-        border-radius: 10px !important;
-        box-shadow: 0 4px 10px rgba(255, 182, 193, 0.4) !important;
+        border-radius: 12px !important;
+        box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3) !important;
+        font-weight: 600 !important;
+        padding: 0.5rem 1rem !important;
         transition: all 0.3s ease !important;
     }
     .stButton>button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 15px rgba(255, 182, 193, 0.6) !important;
+        box-shadow: 0 8px 20px rgba(233, 30, 99, 0.4) !important;
+    }
+    .stButton>button p {
+        color: #ffffff !important; /* Keep button text white */
     }
     
     /* Expander / Sources */
-    .streamlit-expanderHeader {
-        background: transparent !important;
-        color: #d1477a !important;
-        font-weight: 600;
+    .streamlit-expanderHeader p {
+        color: #e91e63 !important;
+        font-weight: 700;
     }
     [data-testid="stExpander"] {
-        background: rgba(255, 255, 255, 0.5);
-        border: 1px solid rgba(255, 255, 255, 0.6);
-        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(233, 30, 99, 0.2);
+        border-radius: 12px;
+        margin-top: 0.5rem;
+    }
+    [data-testid="stExpanderDetails"] p {
+        color: #444444 !important; /* Slightly softer black for source text */
+        font-size: 0.9em;
     }
 </style>
 """, unsafe_allow_html=True)
 
 # 3. Sidebar UI 
 with st.sidebar:
-    st.markdown("<h2 style='color: #d1477a; text-align: center;'>🌸 System Core</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center;'>✨ System Core</h2>", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
     
     st.markdown("#### ⚙️ Architecture")
@@ -129,8 +138,8 @@ with st.sidebar:
     st.divider()
     
     st.markdown("#### 📄 Knowledge Base")
-    st.caption("✅ CMS Summary of Benefits")
-    st.caption("✅ Niva Bupa Policy Wording")
+    st.markdown("✅ CMS Summary of Benefits")
+    st.markdown("✅ Niva Bupa Policy Wording")
     
     st.divider()
     
@@ -139,8 +148,8 @@ with st.sidebar:
         st.rerun()
 
 # 4. Main Chat Interface
-st.markdown("<h1>Health Insurance AI</h1>", unsafe_allow_html=True)
-st.markdown('<p class="subtitle">Secure, grounded answers from your policy documents.</p>', unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; margin-bottom: 0;'>Health Insurance AI</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #e91e63 !important; font-weight: 600; font-size: 1.1em; margin-bottom: 3rem;'>Secure, grounded answers from your policy documents.</p>", unsafe_allow_html=True)
 
 # Initialize chat history
 if "messages" not in st.session_state:
@@ -148,13 +157,13 @@ if "messages" not in st.session_state:
 
 # Display chat messages from history
 for msg in st.session_state.messages:
-    avatar = "👤" if msg["role"] == "user" else "🌸"
+    avatar = "👤" if msg["role"] == "user" else "✨"
     with st.chat_message(msg["role"], avatar=avatar):
         st.markdown(msg["content"])
         if msg.get("sources"):
             with st.expander("📄 View Sources"):
                 for s in msg["sources"]:
-                    st.caption(f"**{s['source']}** — Page {s['page']}")
+                    st.markdown(f"**{s['source']}** — Page {s['page']}")
 
 # Handle new question
 question = st.chat_input("Ask about your coverage, limits, or claims...")
@@ -163,7 +172,7 @@ if question:
     with st.chat_message("user", avatar="👤"):
         st.markdown(question)
 
-    with st.chat_message("assistant", avatar="🌸"):
+    with st.chat_message("assistant", avatar="✨"):
         with st.spinner("Searching documents..."):
             try:
                 result = answer_question(question)
@@ -173,7 +182,7 @@ if question:
                 if result["sources"]:
                     with st.expander("📄 View Sources"):
                         for s in result["sources"]:
-                            st.caption(f"**{s['source']}** — Page {s['page']}")
+                            st.markdown(f"**{s['source']}** — Page {s['page']}")
                 
                 st.session_state.messages.append({
                     "role": "assistant",
