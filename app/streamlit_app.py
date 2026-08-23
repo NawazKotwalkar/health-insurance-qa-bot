@@ -115,7 +115,13 @@ st.markdown("""
         animation: slideUpFade 0.4s ease-out forwards;
     }
 
-    .stChatMessage .stMarkdown p {
+    .stChatMessage .stMarkdown p,
+    .stChatMessage .stMarkdown p,
+    .stChatMessage .stMarkdown li,
+    .stChatMessage .stMarkdown span,
+    .stChatMessage .stMarkdown strong,
+    .stChatMessage .stMarkdown td,
+    .stChatMessage .stMarkdown th {
         color: #000000 !important; /* Black text */
         font-size: 16px;
         line-height: 1.7;
