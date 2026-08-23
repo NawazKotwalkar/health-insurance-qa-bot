@@ -1,6 +1,6 @@
 """
 streamlit_app.py
-Simple, repo-oriented chat UI matching the white/pink aesthetic.
+Unified chatbox UI with heading, chat, and clear button inside a single container.
 """
 
 import sys
@@ -31,34 +31,55 @@ st.markdown("""
         background-color: #f7f9fc;
     }
     
-    /* Center Title and Subtitle */
-    .main-header-container {
-        text-align: center;
-        margin-top: 2rem;
-        margin-bottom: 2rem;
-    }
-    .main-title {
-        color: #0b1120;
-        font-size: 3rem;
-        font-weight: 800;
-        font-family: 'Helvetica Neue', sans-serif;
-        margin-bottom: 0.5rem;
-    }
-    .sub-title {
-        color: #be2959;
-        font-size: 1.2rem;
-        font-weight: 500;
-    }
-
-    /* Wrap the main chat interface in a sleek white card */
-    div[data-testid="stVerticalBlock"] > div:has(> div[data-testid="stVerticalBlock"]) {
+    /* The Unified Main Card */
+    .main-card {
         background-color: #ffffff;
         border-radius: 20px;
         box-shadow: 0 10px 40px rgba(0,0,0,0.06);
         border: 1px solid #eaeaea;
         padding: 2rem;
         max-width: 900px;
+        margin: 2rem auto;
+    }
+
+    /* Target Streamlit's block container to act as the main card wrapper */
+    div[data-testid="stVerticalBlock"] > div:has(> div[data-testid="stVerticalBlock"]) {
+        background-color: #ffffff;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.06);
+        border: 1px solid #eaeaea;
+        padding: 2.5rem !important;
+        max-width: 900px;
         margin: 0 auto;
+    }
+
+    /* Heading inside the card */
+    .card-title {
+        color: #0b1120;
+        font-size: 2.5rem;
+        font-weight: 800;
+        font-family: 'Helvetica Neue', sans-serif;
+        margin-bottom: 0.2rem;
+    }
+    .card-subtitle {
+        color: #be2959;
+        font-size: 1.1rem;
+        font-weight: 500;
+        margin-bottom: 2rem;
+    }
+
+    /* Clear Button styling */
+    .stButton>button {
+        background-color: #f6dce5 !important;
+        color: #be2959 !important;
+        border: 1px solid #ed9ebc !important;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+        float: right;
+        margin-top: 0.5rem;
+    }
+    .stButton>button:hover {
+        background-color: #fcd5e3 !important;
     }
 
     /* Chat Messages - Plain text, no bubbles */
@@ -81,7 +102,7 @@ st.markdown("""
         border: 2px solid #ed9ebc !important;
         border-radius: 12px !important;
         padding: 0.2rem 1rem !important;
-        margin-top: 1rem !important;
+        margin-top: 1.5rem !important;
     }
     .stChatInputContainer textarea {
         color: #0b1120 !important;
@@ -106,15 +127,25 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# 3. Top Header Section (Repo Oriented)
-st.markdown("""
-<div class="main-header-container">
-    <div class="main-title">Insurance Policy RAG</div>
-    <div class="sub-title">Retrieval-Augmented Generation pipeline using Gemini & ChromaDB.</div>
-</div>
-""", unsafe_allow_html=True)
+# 3. Everything is now inside one unified block
 
-# 4. Single Chat Container (No Sidebar/Left Panel)
+# Header row with title and clear button
+col1, col2 = st.columns([3, 1])
+with col1:
+    st.markdown("""
+    <div>
+        <div class="card-title">Insurance Policy RAG</div>
+        <div class="card-subtitle">Retrieval-Augmented Generation pipeline using Gemini & ChromaDB.</div>
+    </div>
+    """, unsafe_allow_html=True)
+with col2:
+    if st.button("🗑️ Clear Chat", use_container_width=True):
+        st.session_state.messages = []
+        st.rerun()
+
+st.divider()
+
+# 4. Chat Container
 chat_container = st.container(height=500, border=False)
 
 with chat_container:
