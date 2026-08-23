@@ -115,16 +115,23 @@ st.markdown("""
         animation: slideUpFade 0.4s ease-out forwards;
     }
 
+    /* Brute-force all text inside chat messages to be black */
+    .stChatMessage .stMarkdown,
     .stChatMessage .stMarkdown p,
-    .stChatMessage .stMarkdown p,
+    .stChatMessage .stMarkdown ul,
+    .stChatMessage .stMarkdown ol,
     .stChatMessage .stMarkdown li,
     .stChatMessage .stMarkdown span,
     .stChatMessage .stMarkdown strong,
+    .stChatMessage .stMarkdown em,
+    .stChatMessage .stMarkdown blockquote,
+    .stChatMessage .stMarkdown table,
     .stChatMessage .stMarkdown td,
-    .stChatMessage .stMarkdown th {
-        color: #000000 !important; /* Black text */
-        font-size: 16px;
-        line-height: 1.7;
+    .stChatMessage .stMarkdown th,
+    .stChatMessage .stMarkdown a {
+        color: #000000 !important; 
+        font-size: 16px !important;
+        line-height: 1.7 !important;
     }
     
     /* Premium Avatars */
