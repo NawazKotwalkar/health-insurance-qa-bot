@@ -1,6 +1,6 @@
 """
 streamlit_app.py
-Stable, responsive UI matching the user's design using native Streamlit layout features.
+Single container UI matching the user's design perfectly.
 """
 
 import sys
@@ -18,7 +18,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 2. Stable CSS Injection
+# 2. CSS Injection
 st.markdown("""
 <style>
     /* Hide the default Streamlit sidebar toggle and top bar */
@@ -51,13 +51,13 @@ st.markdown("""
         margin-bottom: 1.5rem;
     }
 
-    /* Target Native Streamlit Container (border=True) to make it the White Card */
+    /* Target the single Native Streamlit Container */
     div[data-testid="stVerticalBlockBorderWrapper"] {
         background-color: #ffffff;
         border-radius: 12px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-        border: 1px solid #e2e2e2;
-        padding: 1rem !important;
+        border: 1px solid #e2e2e2 !important;
+        padding: 1.5rem !important;
     }
 
     /* Chat Messages - Plain text, no bubbles */
@@ -117,64 +117,60 @@ st.markdown("""
 <div class="outside-subtitle">Retrieval-Augmented Generation pipeline using Gemini & ChromaDB.</div>
 """, unsafe_allow_html=True)
 
-# 4. The White Box Container (using native border wrapper for absolute stability)
-main_card = st.container(border=True)
+# 4. ONE Single Container for everything
+# Using height creates a scrollable area, and natively pins chat_input to the bottom!
+main_card = st.container(height=550)
 
 with main_card:
-    # Use a fixed-height container inside the card for the scrollable chat history
-    chat_container = st.container(height=450, border=False)
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+        st.session_state.messages.append({
+            "role": "assistant", 
+            "content": "👋 Hello! I am the RAG Assistant. Ask me anything about the indexed CMS or Niva Bupa policy documents."
+        })
 
-    with chat_container:
-        if "messages" not in st.session_state:
-            st.session_state.messages = []
-            st.session_state.messages.append({
-                "role": "assistant", 
-                "content": "👋 Hello! I am the RAG Assistant. Ask me anything about the indexed CMS or Niva Bupa policy documents."
-            })
+    for msg in st.session_state.messages:
+        if msg["role"] == "assistant":
+            # Inject a hidden span so we can target the avatar with CSS
+            st.markdown("<span class='assistant-avatar'></span>", unsafe_allow_html=True)
+            avatar = "🧬"
+        else:
+            avatar = "👤"
+            
+        with st.chat_message(msg["role"], avatar=avatar):
+            st.markdown(msg["content"])
+            if msg.get("sources"):
+                with st.expander("View Sources"):
+                    for s in msg["sources"]:
+                        st.markdown(f"**{s['source']}** — Page {s['page']}")
 
-        for msg in st.session_state.messages:
-            if msg["role"] == "assistant":
-                # Inject a hidden span so we can target the avatar with CSS
-                st.markdown("<span class='assistant-avatar'></span>", unsafe_allow_html=True)
-                avatar = "🧬"
-            else:
-                avatar = "👤"
-                
-            with st.chat_message(msg["role"], avatar=avatar):
-                st.markdown(msg["content"])
-                if msg.get("sources"):
-                    with st.expander("View Sources"):
-                        for s in msg["sources"]:
-                            st.markdown(f"**{s['source']}** — Page {s['page']}")
-
-    # Chat Input natively sits at the bottom of the main_card container!
+    # Chat Input natively sits at the bottom of the container
     question = st.chat_input("Ask about your coverage, limits, or claims...")
 
     if question:
         st.session_state.messages.append({"role": "user", "content": question})
-        with chat_container:
-            with st.chat_message("user", avatar="👤"):
-                st.markdown(question)
+        with st.chat_message("user", avatar="👤"):
+            st.markdown(question)
 
-            # Assistant response
-            st.markdown("<span class='assistant-avatar'></span>", unsafe_allow_html=True)
-            with st.chat_message("assistant", avatar="🧬"):
-                with st.spinner("Retrieving contexts..."):
-                    try:
-                        result = answer_question(question)
-                        st.markdown(result["answer"])
-                        
-                        if result["sources"]:
-                            with st.expander("View Sources"):
-                                for s in result["sources"]:
-                                    st.markdown(f"**{s['source']}** — Page {s['page']}")
-                        
-                        st.session_state.messages.append({
-                            "role": "assistant",
-                            "content": result["answer"],
-                            "sources": result["sources"],
-                        })
-                    except Exception as e:
-                        error_msg = f"Error: {e}"
-                        st.error(error_msg)
-                        st.session_state.messages.append({"role": "assistant", "content": error_msg})
+        # Assistant response
+        st.markdown("<span class='assistant-avatar'></span>", unsafe_allow_html=True)
+        with st.chat_message("assistant", avatar="🧬"):
+            with st.spinner("Retrieving contexts..."):
+                try:
+                    result = answer_question(question)
+                    st.markdown(result["answer"])
+                    
+                    if result["sources"]:
+                        with st.expander("View Sources"):
+                            for s in result["sources"]:
+                                st.markdown(f"**{s['source']}** — Page {s['page']}")
+                    
+                    st.session_state.messages.append({
+                        "role": "assistant",
+                        "content": result["answer"],
+                        "sources": result["sources"],
+                    })
+                except Exception as e:
+                    error_msg = f"Error: {e}"
+                    st.error(error_msg)
+                    st.session_state.messages.append({"role": "assistant", "content": error_msg})
