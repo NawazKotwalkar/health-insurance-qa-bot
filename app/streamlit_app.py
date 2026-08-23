@@ -210,7 +210,7 @@ st.markdown("""
 st.markdown("""
 <div class="outside-heading">Insurance Policy RAG</div>
 <div class="outside-subtitle">
-    Retrieval-Augmented Generation pipeline <span class="highlight-badge">Gemini + ChromaDB</span>
+    Retrieval-Augmented Generation pipeline
 </div>
 """, unsafe_allow_html=True)
 
