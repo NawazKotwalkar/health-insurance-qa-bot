@@ -1,6 +1,7 @@
 """
 streamlit_app.py
-Custom UI matching the provided design mockup.
+Completely restructured UI layout to perfectly match the mockup.
+No native sidebar is used. The entire layout is a custom floating card.
 """
 
 import sys
@@ -15,67 +16,76 @@ st.set_page_config(
     page_title="Health Insurance AI",
     page_icon="🧬",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed" # Hide the default sidebar completely
 )
 
-# 2. Custom CSS to match the design precisely
+# 2. Structural CSS Injection
 st.markdown("""
 <style>
-    /* Global App Background (Light Gray with subtle pattern feel) */
+    /* Hide the default Streamlit sidebar toggle and top bar */
+    [data-testid="collapsedControl"] { display: none; }
+    header { visibility: hidden; }
+    
+    /* Global App Background - matches the light gray/white abstract bg */
     .stApp {
         background-color: #f7f9fc;
     }
     
-    /* Center the main headers to match the mockup */
-    .top-header {
+    /* Center Title and Subtitle */
+    .main-header-container {
         text-align: center;
-        font-family: 'Helvetica Neue', sans-serif;
-        margin-top: 1rem;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
     }
-    .top-title {
+    .main-title {
         color: #0b1120;
         font-size: 3.5rem;
         font-weight: 800;
-        margin-bottom: 0.5rem;
+        font-family: 'Helvetica Neue', sans-serif;
+        margin-bottom: 0.2rem;
     }
-    .top-subtitle {
+    .sub-title {
         color: #be2959;
-        font-size: 1.4rem;
+        font-size: 1.3rem;
         font-weight: 500;
-        margin-bottom: 3rem;
     }
 
-    /* Target the main block container to act as the right-side of the white card */
-    .block-container {
+    /* Target the inner Horizontal Block that holds our 2 panes to make it a unified Card */
+    [data-testid="column"]:nth-of-type(2) [data-testid="stHorizontalBlock"] {
         background-color: #ffffff;
-        border-radius: 0 20px 20px 0;
-        box-shadow: 10px 10px 30px rgba(0,0,0,0.05);
-        padding: 3rem !important;
-        max-width: 1000px !important;
-        margin-top: 2rem;
-        margin-bottom: 2rem;
-        border-top: 1px solid #eaeaea;
-        border-right: 1px solid #eaeaea;
-        border-bottom: 1px solid #eaeaea;
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.06);
+        overflow: hidden; /* Ensure inner columns don't break the border radius */
+        border: 1px solid #eaeaea;
     }
 
-    /* Sidebar to act as the left pink panel of the card */
-    [data-testid="stSidebar"] {
-        background-color: #fdeef3 !important; /* Soft pink */
-        border-right: 1px solid #f6dce5 !important;
-        box-shadow: -5px 10px 30px rgba(0,0,0,0.02);
+    /* Left Pane (Pink Panel) */
+    [data-testid="column"]:nth-of-type(2) [data-testid="stHorizontalBlock"] > [data-testid="column"]:nth-of-type(1) {
+        background-color: #fcedf2;
+        padding: 2.5rem 2rem !important;
+        border-right: 1px solid #f6dce5;
     }
     
-    /* Sidebar content typography */
-    [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 {
-        color: #0b1120 !important;
-        font-weight: 700 !important;
-    }
-    [data-testid="stSidebar"] p {
-        color: #0b1120 !important;
+    /* Right Pane (White Chat Area) */
+    [data-testid="column"]:nth-of-type(2) [data-testid="stHorizontalBlock"] > [data-testid="column"]:nth-of-type(2) {
+        background-color: #ffffff;
+        padding: 2.5rem !important;
     }
 
-    /* Chat Messages - NO bubbles, just plain text matching the mockup */
+    /* Left Panel Typography */
+    [data-testid="column"]:nth-of-type(2) [data-testid="stHorizontalBlock"] > [data-testid="column"]:nth-of-type(1) h1, 
+    [data-testid="column"]:nth-of-type(2) [data-testid="stHorizontalBlock"] > [data-testid="column"]:nth-of-type(1) h2, 
+    [data-testid="column"]:nth-of-type(2) [data-testid="stHorizontalBlock"] > [data-testid="column"]:nth-of-type(1) h3 {
+        color: #0b1120 !important;
+        font-weight: 700 !important;
+        margin-bottom: 1rem;
+    }
+    [data-testid="column"]:nth-of-type(2) [data-testid="stHorizontalBlock"] > [data-testid="column"]:nth-of-type(1) p {
+        color: #111111 !important;
+        line-height: 1.8;
+    }
+
+    /* Chat Messages - Plain text, no bubbles */
     .stChatMessage {
         background: transparent !important;
         border: none !important;
@@ -83,121 +93,130 @@ st.markdown("""
         padding: 0 !important;
         margin-bottom: 1.5rem !important;
     }
-    
-    /* Make chat text dark black */
     .stChatMessage .stMarkdown p {
         color: #0b1120 !important;
         font-size: 16px;
         line-height: 1.6;
     }
 
-    /* Chat Input Container - Pink Box like the mockup */
+    /* The Pink Chat Input Box */
     .stChatInputContainer {
         background-color: #fcd5e3 !important;
         border: 2px solid #ed9ebc !important;
         border-radius: 12px !important;
         padding: 0.5rem !important;
-        box-shadow: 0 4px 15px rgba(237, 158, 188, 0.2) !important;
     }
-    
     .stChatInputContainer textarea {
         color: #0b1120 !important;
         background: transparent !important;
     }
-    
-    /* Style the send button inside the chat input */
     .stChatInputContainer button {
         background-color: #ef476f !important;
         color: white !important;
         border-radius: 8px !important;
     }
 
-    /* Hide the default Streamlit top bar decorations */
-    header {visibility: hidden;}
+    /* Hide the bottom 'Made with Streamlit' footer */
+    footer {visibility: hidden;}
     
-    /* Expander / Sources styling to match the clean look */
+    /* Adjust expander styling */
     .streamlit-expanderHeader p {
         color: #be2959 !important;
         font-weight: 600;
     }
     [data-testid="stExpander"] {
-        background: transparent;
+        background: #fdfdfd;
         border: 1px solid #eaeaea;
         border-radius: 8px;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# 3. Top Headers (Outside the main container logic if possible, 
-# but Streamlit forces it inside the block-container. We will just render them at the top)
-st.markdown("<div class='top-header'><div class='top-title'>Health Insurance AI</div><div class='top-subtitle'>Secure, grounded answers from your policy documents.</div></div>", unsafe_allow_html=True)
+# 3. Top Header Section
+st.markdown("""
+<div class="main-header-container">
+    <div class="main-title">Health Insurance AI</div>
+    <div class="sub-title">Secure, grounded answers from your policy documents.</div>
+</div>
+""", unsafe_allow_html=True)
 
-# 4. Sidebar UI (The left pink panel)
-with st.sidebar:
-    st.markdown("<h2>System Settings</h2>", unsafe_allow_html=True)
-    st.markdown("<br>", unsafe_allow_html=True)
-    
-    st.markdown("#### ✨ System Core")
-    st.markdown("#### ⚙️ Architecture")
-    st.markdown(
-        """
-        LLM: Gemini 3.5 Flash  
-        Embed: Gemini-Embedding-2  
-        Vector: ChromaDB  
-        """
-    )
-    
-    st.markdown("<br><hr style='background-color: #f6dce5; height: 1px; border: none;'><br>", unsafe_allow_html=True)
-    
-    st.markdown("#### 📄 Knowledge Base")
-    st.markdown("✅ CMS Summary of Benefits")
-    st.markdown("✅ Niva Bupa Policy Wording")
+# 4. The Master Card Layout using Columns (1:2.5 ratio)
+# To ensure the card is centered and restricted in width, we put it inside an outer container
+outer_spacer1, card_col, outer_spacer2 = st.columns([1, 8, 1])
 
-# 5. Main Chat Interface
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-    # Add the default greeting from the mockup
-    st.session_state.messages.append({
-        "role": "assistant", 
-        "content": "👋 Hello! I am your Health Insurance AI Assistant. Ask me anything about your coverage, limits, or claims from your Niva Bupa and CMS policy documents."
-    })
+with card_col:
+    # Inside the card_col, we create the dual-pane layout
+    left_pane, right_pane = st.columns([1, 2.2], gap="large")
 
-# Display chat messages from history
-for msg in st.session_state.messages:
-    # Use specific emojis that look like the mockup's avatars
-    avatar = "👤" if msg["role"] == "user" else "🧬"
-    with st.chat_message(msg["role"], avatar=avatar):
-        st.markdown(msg["content"])
-        if msg.get("sources"):
-            with st.expander("View Sources"):
-                for s in msg["sources"]:
-                    st.markdown(f"**{s['source']}** — Page {s['page']}")
+    # --- LEFT PANE: SYSTEM SETTINGS ---
+    with left_pane:
+        st.markdown("## System Settings")
+        st.markdown("<br>", unsafe_allow_html=True)
+        
+        st.markdown("#### ✨ System Core")
+        st.markdown("#### ⚙️ Architecture")
+        st.markdown(
+            """
+            **LLM:** Gemini 3.5 Flash  
+            **Embed:** Gemini-Embedding-2  
+            **Vector:** ChromaDB  
+            """
+        )
+        
+        st.markdown("<hr style='background-color: #f6dce5; height: 1px; border: none; margin: 2rem 0;'>", unsafe_allow_html=True)
+        
+        st.markdown("#### 📄 Knowledge Base")
+        st.markdown("✅ CMS Summary of Benefits")
+        st.markdown("✅ Niva Bupa Policy Wording")
 
-# Handle new question
-question = st.chat_input("Ask about your coverage, limits, or claims...")
-if question:
-    st.session_state.messages.append({"role": "user", "content": question})
-    with st.chat_message("user", avatar="👤"):
-        st.markdown(question)
-
-    with st.chat_message("assistant", avatar="🧬"):
-        with st.spinner("Searching documents..."):
-            try:
-                result = answer_question(question)
-                st.markdown(result["answer"])
-                
-                # Format sources nicely
-                if result["sources"]:
-                    with st.expander("View Sources"):
-                        for s in result["sources"]:
-                            st.markdown(f"**{s['source']}** — Page {s['page']}")
-                
+    # --- RIGHT PANE: CHAT INTERFACE ---
+    with right_pane:
+        # Chat history wrapper
+        chat_container = st.container(height=500, border=False)
+        
+        with chat_container:
+            if "messages" not in st.session_state:
+                st.session_state.messages = []
                 st.session_state.messages.append({
-                    "role": "assistant",
-                    "content": result["answer"],
-                    "sources": result["sources"],
+                    "role": "assistant", 
+                    "content": "👋 Hello! I am your Health Insurance AI Assistant. Ask me anything about your coverage, limits, or claims from your Niva Bupa and CMS policy documents."
                 })
-            except Exception as e:
-                error_msg = f"Error: {e}"
-                st.error(error_msg)
-                st.session_state.messages.append({"role": "assistant", "content": error_msg})
+
+            for msg in st.session_state.messages:
+                avatar = "👤" if msg["role"] == "user" else "🧬"
+                with st.chat_message(msg["role"], avatar=avatar):
+                    st.markdown(msg["content"])
+                    if msg.get("sources"):
+                        with st.expander("View Sources"):
+                            for s in msg["sources"]:
+                                st.markdown(f"**{s['source']}** — Page {s['page']}")
+
+        # Chat Input at the bottom of the right pane
+        question = st.chat_input("Ask about your coverage, limits, or claims...")
+        
+        if question:
+            st.session_state.messages.append({"role": "user", "content": question})
+            with chat_container:
+                with st.chat_message("user", avatar="👤"):
+                    st.markdown(question)
+
+                with st.chat_message("assistant", avatar="🧬"):
+                    with st.spinner("Searching documents..."):
+                        try:
+                            result = answer_question(question)
+                            st.markdown(result["answer"])
+                            
+                            if result["sources"]:
+                                with st.expander("View Sources"):
+                                    for s in result["sources"]:
+                                        st.markdown(f"**{s['source']}** — Page {s['page']}")
+                            
+                            st.session_state.messages.append({
+                                "role": "assistant",
+                                "content": result["answer"],
+                                "sources": result["sources"],
+                            })
+                        except Exception as e:
+                            error_msg = f"Error: {e}"
+                            st.error(error_msg)
+                            st.session_state.messages.append({"role": "assistant", "content": error_msg})
