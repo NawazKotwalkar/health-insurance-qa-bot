@@ -23,7 +23,7 @@ load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 CHROMA_DIR = Path(__file__).parent.parent / "chroma_db"
 COLLECTION_NAME = "insurance_policies"
-EMBED_MODEL = "models/gemini-embedding-2"
+EMBED_MODEL = "gemini-embedding-2-preview"
 EMBED_BATCH_SIZE = 20
 
 
@@ -38,10 +38,9 @@ def get_embeddings(texts: list[str]) -> list[list[float]]:
         while True:
             try:
                 result = genai.embed_content(
-                    model=EMBED_MODEL,
-                    content=batch,
-                    task_type="retrieval_document",
-                )
+                model=EMBED_MODEL,
+                content=batch,
+            )
                 break
             except Exception as e:
                 if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):

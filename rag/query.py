@@ -16,8 +16,8 @@ load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 CHROMA_DIR = Path(__file__).parent.parent / "chroma_db"
 COLLECTION_NAME = "insurance_policies"
-EMBED_MODEL = "models/gemini-embedding-2"
-CHAT_MODEL = "gemini-3.5-flash"
+EMBED_MODEL = "gemini-embedding-2-preview"
+CHAT_MODEL = "gemini-2.5-flash"
 TOP_K = 5
 
 SYSTEM_PROMPT = """You are an assistant that answers questions about health insurance \
@@ -38,9 +38,8 @@ def retrieve(question: str, top_k: int = TOP_K):
     genai.configure(api_key=GEMINI_API_KEY)
 
     query_embedding = genai.embed_content(
-        model=EMBED_MODEL,
-        content=question,
-        task_type="retrieval_query",
+    model=EMBED_MODEL,
+    content=question,
     )["embedding"]
 
     collection = _get_collection()
