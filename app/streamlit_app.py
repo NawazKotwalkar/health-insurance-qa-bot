@@ -9,17 +9,6 @@ import streamlit as st
 
 sys.path.append(str(Path(__file__).parent.parent))
 
-# --- CLOUD HOSTING FIX ---
-# Since chroma_db is in .gitignore, it won't exist when deployed to Streamlit Cloud.
-# We check if it exists, and if not, we automatically build it on startup!
-import os
-import subprocess
-
-if not os.path.exists(Path(__file__).parent.parent / "chroma_db"):
-    st.info("First-time cloud deployment detected! Building ChromaDB vector index from PDFs... This takes about 60 seconds.")
-    subprocess.run([sys.executable, str(Path(__file__).parent.parent / "ingestion" / "build_index.py")])
-    st.success("Vector database built successfully!")
-
 from rag.query import answer_question
 
 # 1. Page Configuration
