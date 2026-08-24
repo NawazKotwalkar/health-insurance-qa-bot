@@ -204,6 +204,35 @@ st.markdown("""
         border-color: #ec4899;
         background: #fce7f3;
     }
+    
+    /* =========================================
+       MOBILE FIRST VIEW (MFV) RESPONSIVE DESIGN
+       ========================================= */
+    @media (max-width: 768px) {
+        .block-container {
+            padding-top: 1rem !important;
+            padding-left: 0.5rem !important;
+            padding-right: 0.5rem !important;
+        }
+        .outside-heading {
+            font-size: 2.2rem !important;
+            line-height: 1.1;
+        }
+        .outside-subtitle {
+            font-size: 0.95rem !important;
+            margin-bottom: 1.5rem !important;
+        }
+        div[data-testid="stVerticalBlockBorderWrapper"] {
+            padding: 1rem !important; /* Less padding on small screens */
+            border-radius: 16px !important;
+        }
+        .stChatMessage {
+            padding: 0.8rem 1rem !important;
+        }
+        .stChatInputContainer {
+            padding: 0.4rem 0.8rem !important;
+        }
+    }
 </style>
 """, unsafe_allow_html=True)
 
